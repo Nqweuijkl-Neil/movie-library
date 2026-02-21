@@ -7,7 +7,7 @@ import { useMovies } from "./useMovies";
 const average = (arr) =>
     arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 
-const API_KEY = "f84fc31d";
+const KEY = "f84fc31d";
 
 export default function App() {
     const [query, setQuery] = useState("");
@@ -282,14 +282,28 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
     useEffect(
         function () {
             async function getMovieDetails() {
-                setIsLoading(true);
-                // fetch(`https://www.omdbapi.com/?apikey=${API_KEY}&s=${encodeURIComponent(query)}`)
-                const res = await fetch(
-                    `https://www.omdbapi.com/?apikey=${API_KEY}&s=${encodeURIComponent(selectedId)}`,
-                );
-                const data = await res.json();
-                setMovie(data);
-                setIsLoading(false);
+                try {
+                    setIsLoading(true);
+
+                    const res = await fetch(
+                        `https://www.omdbapi.com/?apikey=${KEY}&i=${selectedId}`,
+                    );
+
+                    if (!res.ok)
+                        throw new Error(`Request failed: ${res.status}`);
+
+                    const data = await res.json();
+
+                    // OMDb returns { Response: "False", Error: "Movie not found!" }
+                    if (data.Response === "False") throw new Error(data.Error);
+
+                    setMovie(data);
+                } catch (err) {
+                    console.error(err);
+                    // if you want, set an error state here
+                } finally {
+                    setIsLoading(false);
+                }
             }
             getMovieDetails();
         },
