@@ -28,6 +28,9 @@ body {
     color: var(--color-text);
     background-color: var(--color-background-900);
     padding: 2.4rem;
+
+    /* helps consistent scrolling behavior */
+    min-height: 100vh;
 }
 
 /* ******* */
@@ -44,12 +47,16 @@ body {
 
 .main {
     margin-top: 2.4rem;
+
+    /* keep the app UI height, but allow internal scroll in boxes */
     height: calc(100vh - 7.2rem - 3 * 2.4rem);
+
     display: flex;
     gap: 2.4rem;
     justify-content: center;
 }
 
+/* Make boxes scrollable */
 .box {
     width: 42rem;
     max-width: 42rem;
@@ -57,8 +64,15 @@ body {
     border-radius: 0.9rem;
     position: relative;
 
-    height: 100%; /* important */
-    overflow-y: auto; /* this creates the scroll */
+    /* NEW: fill available height and allow scrolling inside */
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Optional: nicer scroll feel on supported browsers */
+.box {
+    scrollbar-gutter: stable;
 }
 
 .loader {
@@ -102,8 +116,6 @@ body {
     width: 40rem;
     transition: all 0.3s;
     color: var(--color-text);
-
-    /* background-color: var(--color-background-900); */
     background-color: var(--color-primary-light);
 }
 
@@ -143,6 +155,7 @@ body {
     padding: 0.8rem 0;
 }
 
+/* You can keep this, but it's no longer required for scrolling */
 .list-watched {
     height: calc(100% - 9rem);
 }
@@ -327,7 +340,6 @@ body {
     aspect-ratio: 1;
     border-radius: 50%;
     border: none;
-    /* background-color: var(--color-text); */
     background-color: #fff;
     color: var(--color-background-500);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.8);
